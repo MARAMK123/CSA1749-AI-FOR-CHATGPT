@@ -1,0 +1,53 @@
+from itertools import permutations
+
+
+def is_valid_solution(assignment, words, result):
+    def word_to_number(word):
+        return sum(assignment[letter] * (10 ** i) for i, letter in enumerate(reversed(word)))
+
+    word_sum = sum(word_to_number(word) for word in words)
+    return word_sum == word_to_number(result)
+
+
+def solve_cryptarithmetic(words, result):
+    
+    unique_letters = set("".join(words) + result)
+
+    if len(unique_letters) > 10:
+        print("Too many unique letters; cannot be solved with unique digits (0-9).")
+        return
+
+    
+    for perm in permutations(range(10), len(unique_letters)):
+        assignment = dict(zip(unique_letters, perm))
+
+        
+        if any(assignment[word[0]] == 0 for word in words + [result]):
+            continue
+
+        if is_valid_solution(assignment, words, result):
+            
+            print("Solution found:")
+            for letter, digit in assignment.items():
+                print(f"{letter} = {digit}")
+            return
+
+    print("No solution found.")
+
+
+def main():
+   
+    words = ["SEND", "MORE"]
+    result = "MONEY"
+
+    print("Solving the cryptarithmetic puzzle:")
+    for word in words:
+        print(word)
+    print("+", result)
+    print("-------")
+
+    
+    solve_cryptarithmetic(words, result)
+
+if __name__ == "__main__":
+    main()

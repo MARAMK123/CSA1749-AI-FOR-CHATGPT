@@ -1,0 +1,52 @@
+class VacuumCleaner:
+    def __init__(self, location, room_state):
+        self.location = location  
+        self.room_state = room_state  
+
+    def clean_room(self):
+        
+        if self.room_state[self.location] == 'Dirty':
+            print(f"Vacuum cleaner is in Room {self.location}. Room {self.location} is Dirty. Cleaning...")
+            self.room_state[self.location] = 'Clean'
+            print(f"Room {self.location} is now Clean.")
+        else:
+            print(f"Vacuum cleaner is in Room {self.location}. Room {self.location} is already Clean.")
+
+    def move(self):
+        
+        if self.location == 'A':
+            self.location = 'B'
+            print("Moving to Room B.")
+        else:
+            self.location = 'A'
+            print("Moving to Room A.")
+
+    def run(self):
+        print("Starting Vacuum Cleaner Simulation...")
+
+        
+        while 'Dirty' in self.room_state.values():
+            self.clean_room()
+            if 'Dirty' in self.room_state.values():
+                self.move()
+
+        print("Both rooms are now clean. Stopping simulation.")
+
+
+def main():
+    
+    location = input("Enter the initial location of the vacuum cleaner (A/B): ").strip().upper()
+    room_A_state = input("Enter the state of Room A (Clean/Dirty): ").strip().capitalize()
+    room_B_state = input("Enter the state of Room B (Clean/Dirty): ").strip().capitalize()
+
+    
+    room_state = {'A': room_A_state, 'B': room_B_state}
+
+    
+    vacuum_cleaner = VacuumCleaner(location, room_state)
+
+    
+    vacuum_cleaner.run()
+
+if __name__ == "__main__":
+    main()

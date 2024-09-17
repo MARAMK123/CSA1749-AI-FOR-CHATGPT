@@ -1,0 +1,83 @@
+from collections import deque
+
+
+def is_goal(state, target):
+    return state[0] == target or state[1] == target
+
+
+def get_next_states(state, jug1_capacity, jug2_capacity):
+    jug1, jug2 = state
+    next_states = []
+
+    
+    if jug1 < jug1_capacity:
+        next_states.append((jug1_capacity, jug2))
+
+    
+    if jug2 < jug2_capacity:
+        next_states.append((jug1, jug2_capacity))
+
+    
+    if jug1 > 0:
+        next_states.append((0, jug2))
+
+    
+    if jug2 > 0:
+        next_states.append((jug1, 0))
+
+    
+    if jug1 > 0 and jug2 < jug2_capacity:
+        pour_amount = min(jug1, jug2_capacity - jug2)
+        next_states.append((jug1 - pour_amount, jug2 + pour_amount))
+
+   
+    if jug2 > 0 and jug1 < jug1_capacity:
+        pour_amount = min(jug2, jug1_capacity - jug1)
+        next_states.append((jug1 + pour_amount, jug2 - pour_amount))
+
+    return next_states
+
+
+def bfs(jug1_capacity, jug2_capacity, target):
+    initial_state = (0, 0)  
+    queue = deque([(initial_state, [])])  
+    visited = set()  
+
+    while queue:
+        current_state, path = queue.popleft()
+
+        if is_goal(current_state, target):
+            return path + [current_state]  
+
+        if current_state in visited:
+            continue
+
+        visited.add(current_state)
+
+        for next_state in get_next_states(current_state, jug1_capacity, jug2_capacity):
+            if next_state not in visited:
+                queue.append((next_state, path + [current_state]))
+
+    return None  
+
+
+def print_solution(path):
+    for step in path:
+        print(f"Jug1: {step[0]} liters, Jug2: {step[1]} liters")
+
+
+def main():
+    jug1_capacity = int(input("Enter capacity of Jug1: "))
+    jug2_capacity = int(input("Enter capacity of Jug2: "))
+    target = int(input("Enter the target amount of water: "))
+
+    solution = bfs(jug1_capacity, jug2_capacity, target)
+
+    if solution:
+        print("\nSolution found:")
+        print_solution(solution)
+    else:
+        print("\nNo solution exists.")
+
+if __name__ == "__main__":
+    main()

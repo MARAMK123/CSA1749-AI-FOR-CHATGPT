@@ -1,0 +1,61 @@
+
+def is_safe(region, color, graph, color_map):
+    for neighbor in graph[region]:
+        if color_map[neighbor] == color:
+            return False
+    return True
+
+
+def map_coloring(graph, color_options, color_map, region_index):
+    
+    if region_index == len(graph):
+        return True
+
+    region = list(graph.keys())[region_index]
+
+    
+    for color in color_options:
+        if is_safe(region, color, graph, color_map):
+            color_map[region] = color  
+
+            
+            if map_coloring(graph, color_options, color_map, region_index + 1):
+                return True
+
+            
+            color_map[region] = None
+
+    return False
+
+
+def solve_map_coloring(graph, color_options):
+    
+    color_map = {region: None for region in graph}
+
+    
+    if map_coloring(graph, color_options, color_map, 0):
+        return color_map
+    else:
+        return "No solution exists"
+
+
+graph = {
+    'A': ['B', 'C', 'D'],
+    'B': ['A', 'C'],
+    'C': ['A', 'B', 'D'],
+    'D': ['A', 'C'],
+}
+
+
+color_options = ['Red', 'Green', 'Blue']
+
+
+solution = solve_map_coloring(graph, color_options)
+
+
+if isinstance(solution, dict):
+    print("Map coloring solution:")
+    for region, color in solution.items():
+        print(f"Region {region}: {color}")
+else:
+    print(solution)
